@@ -1,27 +1,45 @@
+SHELL = bash
+
 # Inspired from https://github.com/hypriot/rpi-mysql/blob/master/Makefile
 
+#DOCKER_REGISTRY=''
 DOCKER_IMAGE_VERSION=4.9.2
 DOCKER_IMAGE_NAME=biarms/wordpress
-DOCKER_IMAGE_TAGNAME=$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
+DOCKER_IMAGE_TAGNAME=$(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
+DOCKER_FILE=Dockerfile
 
-default: build
+default: build test tag push
 
-build:
-	docker build -t $(DOCKER_IMAGE_TAGNAME) .
-	docker tag $(DOCKER_IMAGE_TAGNAME) $(DOCKER_IMAGE_NAME):latest
-	docker tag $(DOCKER_IMAGE_TAGNAME) $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
+check:
+	@if [[ "$(DOCKER_IMAGE_VERSION)" == "" ]]; then \
+	    echo 'DOCKER_IMAGE_VERSION is $(DOCKER_IMAGE_VERSION) (MUST BE SET !)' && \
+	    echo 'Correct usage sample: ' && \
+	    echo '    DOCKER_IMAGE_VERSION=5.5 make ' && \
+	    echo '    or ' && \
+        echo '    DOCKER_IMAGE_VERSION=5.7 make' && \
+        exit 1; \
+	fi
+	@which manifest-tool > /dev/null || (echo "Ensure that you've got the manifest-tool utility in your path. Could be downloaded from  https://github.com/estesp/manifest-tool/releases/download/" && exit 2)
+	@echo "DOCKER_REGISTRY: $(DOCKER_REGISTRY)"
 
-push:
-	docker push $(DOCKER_IMAGE_NAME):latest
-	docker push $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
+tag: check
+	docker tag $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
+	docker tag $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest $(DOCKER_IMAGE_TAGNAME)
 
-test:
-	docker run --rm $(DOCKER_IMAGE_TAGNAME) /bin/echo "Success."
+build: check
+	docker build -t $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest -f $(DOCKER_FILE) .
 
-version:
-	docker run --rm $(DOCKER_IMAGE_TAGNAME) mysql --version
+push-images: check
+	docker push $(DOCKER_IMAGE_TAGNAME)
+	docker push $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest
 
-rmi:
+push: push-images
+
+test: check
+	docker run --rm $(DOCKER_IMAGE_NAME) /bin/echo "Success."
+	docker run --rm $(DOCKER_IMAGE_NAME) uname -a
+
+rmi: check
 	docker rmi -f $(DOCKER_IMAGE_TAGNAME)
 
 rebuild: rmi build
