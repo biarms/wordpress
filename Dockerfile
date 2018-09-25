@@ -2,7 +2,7 @@
 # COPY docker-entrypoint.sh /usr/local/bin/
 # ENTRYPOINT ["docker-entrypoint.sh"]
 # USER root
-FROM wordpress:4.9.4
+FROM wordpress:4.9.8
 MAINTAINER Brother In Arms <project.biarms@gmail.com>
 
 COPY wp-content /usr/src/wordpress/wp-content
