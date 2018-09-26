@@ -1,12 +1,19 @@
+# Perform a multi-stage build as explained at https://docs.docker.com/v17.09/engine/userguide/eng-image/multistage-build/#name-your-build-stages
+FROM biarms/qemu-bin:latest as qemu-bin-ref
+
+# BUILD_ARCH: ie: "arm64v8/"
+ARG BUILD_ARCH
+# VERSION: the version. ie: "4.9.8"
+ARG VERSION
+
+FROM ${BUILD_ARCH}wordpress:${VERSION}
+ARG QEMU_ARCH
+COPY --from=qemu-bin-ref /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin/qemu-${QEMU_ARCH}-static
+
 # From https://github.com/docker-library/wordpress/blob/master/php5.6/fpm-alpine/Dockerfile
 # COPY docker-entrypoint.sh /usr/local/bin/
 # ENTRYPOINT ["docker-entrypoint.sh"]
 # USER root
-# ARCH: the dockre architecture. ie: "arm64v8/"
-ARG ARCH
-# VERSION: the version. ie: "4.9.8"
-ARG VERSION
-FROM ${ARCH}wordpress:${VERSION}
 MAINTAINER Brother In Arms <project.biarms@gmail.com>
 
 COPY wp-content /usr/src/wordpress/wp-content

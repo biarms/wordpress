@@ -75,8 +75,8 @@ script:
     echo "   #TODO: armv6l, armv7l " >> manifest.yaml
   - cat manifest.yaml
   - VCS_REF=$(git rev-parse --short HEAD)
-  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg ARCH="arm32v7/" -t ${IMAGE_NAME}:build .
-  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg ARCH="arm64v8/" -t ${IMAGE_NAME}:build .
+  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm32v7/" -t ${IMAGE_NAME}:build .
+  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm64v8/" -t ${IMAGE_NAME}:build .
 
 after_success:
   - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
