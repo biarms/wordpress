@@ -4,6 +4,7 @@ SHELL = bash
 
 #DOCKER_REGISTRY=''
 ARCH=arm64v8/
+QEMU_ARCH=aarm64
 DOCKER_IMAGE_VERSION=4.9.8
 DOCKER_IMAGE_NAME=biarms/wordpress
 DOCKER_IMAGE_TAGNAME=$(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
@@ -20,7 +21,7 @@ tag: check
 	docker tag $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest $(DOCKER_IMAGE_TAGNAME)
 
 build: check
-	docker build -t $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest -f $(DOCKER_FILE) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg ARCH="${ARCH}" .
+	docker build -t $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest -f $(DOCKER_FILE) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg ARCH="${ARCH}" --build-arg QEMU_ARCH="${QEMU_ARCH}" .
 
 push-images: check
 	docker push $(DOCKER_IMAGE_TAGNAME)
