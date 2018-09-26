@@ -3,7 +3,7 @@ SHELL = bash
 # Inspired from https://github.com/hypriot/rpi-mysql/blob/master/Makefile
 
 #DOCKER_REGISTRY=''
-DOCKER_IMAGE_VERSION=4.9.2
+DOCKER_IMAGE_VERSION=4.9.8
 DOCKER_IMAGE_NAME=biarms/wordpress
 DOCKER_IMAGE_TAGNAME=$(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
 DOCKER_FILE=Dockerfile
@@ -11,14 +11,6 @@ DOCKER_FILE=Dockerfile
 default: build test tag push
 
 check:
-	@if [[ "$(DOCKER_IMAGE_VERSION)" == "" ]]; then \
-	    echo 'DOCKER_IMAGE_VERSION is $(DOCKER_IMAGE_VERSION) (MUST BE SET !)' && \
-	    echo 'Correct usage sample: ' && \
-	    echo '    DOCKER_IMAGE_VERSION=5.5 make ' && \
-	    echo '    or ' && \
-        echo '    DOCKER_IMAGE_VERSION=5.7 make' && \
-        exit 1; \
-	fi
 	@which manifest-tool > /dev/null || (echo "Ensure that you've got the manifest-tool utility in your path. Could be downloaded from  https://github.com/estesp/manifest-tool/releases/download/" && exit 2)
 	@echo "DOCKER_REGISTRY: $(DOCKER_REGISTRY)"
 

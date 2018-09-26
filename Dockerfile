@@ -2,8 +2,16 @@
 # COPY docker-entrypoint.sh /usr/local/bin/
 # ENTRYPOINT ["docker-entrypoint.sh"]
 # USER root
-FROM wordpress:4.9.2
+ARG VERSION
+FROM wordpress:${VERSION}
 MAINTAINER Brother In Arms <project.biarms@gmail.com>
 
 COPY wp-content /usr/src/wordpress/wp-content
 RUN chown -R www-data:www-data /usr/src/wordpress
+
+ARG VCS_REF
+ARG BUILD_DATE
+LABEL \
+	org.label-schema.build-date=${BUILD_DATE} \
+	org.label-schema.vcs-ref=${VCS_REF} \
+	org.label-schema.vcs-url="https://github.com/biarms/wordpress"
