@@ -56,35 +56,49 @@ script:
   - >
     echo "manifests:" >> manifest.yaml
   - >
-    echo "  - image: ${IMAGE_NAME}:linux-aarch64-${IMAGE_VERSION} " >> manifest.yaml
+    echo "  - image: ${IMAGE_NAME}:linux-arm32v5-${IMAGE_VERSION} " >> manifest.yaml
   - >
     echo "    platform: " >> manifest.yaml
-  - >
-    echo "      architecture: aarch64 " >> manifest.yaml
   - >
     echo "      os: linux " >> manifest.yaml
-  - >
-    echo "  - image: ${IMAGE_NAME}:linux-arm-${IMAGE_VERSION} " >> manifest.yaml
-  - >
-    echo "    platform: " >> manifest.yaml
   - >
     echo "      architecture: arm " >> manifest.yaml
   - >
+    echo "      variant: v5 " >> manifest.yaml
+  - >
+    echo "  - image: ${IMAGE_NAME}:linux-arm32v7-${IMAGE_VERSION} " >> manifest.yaml
+  - >
+    echo "    platform: " >> manifest.yaml
+  - >
     echo "      os: linux " >> manifest.yaml
   - >
-    echo "   #TODO: armv6l, armv7l " >> manifest.yaml
+    echo "      architecture: arm " >> manifest.yaml
+  - >
+    echo "      variant: v7 " >> manifest.yaml
+  - >
+    echo "  - image: ${IMAGE_NAME}:linux-arm64v8-${IMAGE_VERSION} " >> manifest.yaml
+  - >
+    echo "    platform: " >> manifest.yaml
+  - >
+    echo "      os: linux " >> manifest.yaml
+  - >
+    echo "      architecture: arm64 " >> manifest.yaml
+  - >
+    echo "      variant: v8 " >> manifest.yaml
   - cat manifest.yaml
   - VCS_REF=$(git rev-parse --short HEAD)
-  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm32v5/" --build-arg QEMU_ARCH="arm" -t ${IMAGE_NAME}:build .
-  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm32v7/" --build-arg QEMU_ARCH="arm" -t ${IMAGE_NAME}:build .
-  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm64v8/" --build-arg QEMU_ARCH="aarch64" -t ${IMAGE_NAME}:build .
+  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm32v5/" --build-arg QEMU_ARCH="arm" -t ${IMAGE_NAME}:build-arm32v5 .
+  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm32v7/" --build-arg QEMU_ARCH="arm" -t ${IMAGE_NAME}:build-arm32v7 .
+  - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm64v8/" --build-arg QEMU_ARCH="aarch64" -t ${IMAGE_NAME}:build-arm64v8 .
 
 after_success:
   - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-  - docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:linux-aarch64-${IMAGE_VERSION}
-  - docker push ${IMAGE_NAME}:linux-aarch64-${IMAGE_VERSION}
-  - docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:linux-arm-${IMAGE_VERSION}
-  - docker push ${IMAGE_NAME}:linux-arm-${IMAGE_VERSION}
+  - docker tag ${IMAGE_NAME}:build-arm32v5 ${IMAGE_NAME}:linux-arm32v5-${IMAGE_VERSION}
+  - docker push ${IMAGE_NAME}:linux-arm32v5-${IMAGE_VERSION}
+  - docker tag ${IMAGE_NAME}:build-arm32v7 ${IMAGE_NAME}:linux-arm32v7-${IMAGE_VERSION}
+  - docker push ${IMAGE_NAME}:linux-arm32v7-${IMAGE_VERSION}
+  - docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:linux-arm32v8-${IMAGE_VERSION}
+  - docker push ${IMAGE_NAME}:linux-arm32v8-${IMAGE_VERSION}
   - bash -c './manifest-tool push from-spec manifest.yaml'
   - >
     if [[ "${BETA_MODE}" == "false" ]]; then
