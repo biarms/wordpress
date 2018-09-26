@@ -97,8 +97,8 @@ after_success:
   - docker push ${IMAGE_NAME}:linux-arm32v5-${IMAGE_VERSION}
   - docker tag ${IMAGE_NAME}:build-arm32v7 ${IMAGE_NAME}:linux-arm32v7-${IMAGE_VERSION}
   - docker push ${IMAGE_NAME}:linux-arm32v7-${IMAGE_VERSION}
-  - docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:linux-arm32v8-${IMAGE_VERSION}
-  - docker push ${IMAGE_NAME}:linux-arm32v8-${IMAGE_VERSION}
+  - docker tag ${IMAGE_NAME}:build-arm64v8 ${IMAGE_NAME}:linux-arm64v8-${IMAGE_VERSION}
+  - docker push ${IMAGE_NAME}:linux-arm64v8-${IMAGE_VERSION}
   - bash -c './manifest-tool push from-spec manifest.yaml'
   - >
     if [[ "${BETA_MODE}" == "false" ]]; then
