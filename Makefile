@@ -3,7 +3,7 @@ SHELL = bash
 # Inspired from https://github.com/hypriot/rpi-mysql/blob/master/Makefile
 
 #DOCKER_REGISTRY=''
-ARCH="arm64v8/"
+ARCH=arm64v8/
 DOCKER_IMAGE_VERSION=4.9.8
 DOCKER_IMAGE_NAME=biarms/wordpress
 DOCKER_IMAGE_TAGNAME=$(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)

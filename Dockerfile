@@ -2,8 +2,10 @@
 # COPY docker-entrypoint.sh /usr/local/bin/
 # ENTRYPOINT ["docker-entrypoint.sh"]
 # USER root
-ARG ARCH # ie: "arm64v8/"
-ARG VERSION # ie: "4.9.8"
+# ARCH: the dockre architecture. ie: "arm64v8/"
+ARG ARCH
+# VERSION: the version. ie: "4.9.8"
+ARG VERSION
 FROM ${ARCH}wordpress:${VERSION}
 MAINTAINER Brother In Arms <project.biarms@gmail.com>
 
