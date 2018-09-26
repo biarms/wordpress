@@ -1,10 +1,10 @@
-# Perform a multi-stage build as explained at https://docs.docker.com/v17.09/engine/userguide/eng-image/multistage-build/#name-your-build-stages
-FROM biarms/qemu-bin:latest as qemu-bin-ref
-
 # BUILD_ARCH: ie: "arm64v8/"
 ARG BUILD_ARCH
 # VERSION: the version. ie: "4.9.8"
 ARG VERSION
+
+# Perform a multi-stage build as explained at https://docs.docker.com/v17.09/engine/userguide/eng-image/multistage-build/#name-your-build-stages
+FROM biarms/qemu-bin:latest as qemu-bin-ref
 
 FROM ${BUILD_ARCH}wordpress:${VERSION}
 ARG QEMU_ARCH
