@@ -2,8 +2,9 @@
 # COPY docker-entrypoint.sh /usr/local/bin/
 # ENTRYPOINT ["docker-entrypoint.sh"]
 # USER root
-ARG VERSION
-FROM wordpress:${VERSION}
+ARG ARCH # ie: "arm64v8/"
+ARG VERSION # ie: "4.9.8"
+FROM ${ARCH}wordpress:${VERSION}
 MAINTAINER Brother In Arms <project.biarms@gmail.com>
 
 COPY wp-content /usr/src/wordpress/wp-content
