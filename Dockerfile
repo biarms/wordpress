@@ -16,7 +16,10 @@ COPY --from=qemu-bin-ref /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin/qemu-${QEMU_
 # USER root
 MAINTAINER Brother In Arms <project.biarms@gmail.com>
 
-COPY wp-content /usr/src/wordpress/wp-content
+
+ADD https://downloads.wordpress.org/theme/baskerville.1.26.zip /usr/src/wordpress/wp-content/themes
+
+# COPY wp-content /usr/src/wordpress/wp-content
 RUN chown -R www-data:www-data /usr/src/wordpress
 
 ARG VCS_REF
