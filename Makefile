@@ -4,7 +4,7 @@ SHELL = bash
 
 #DOCKER_REGISTRY=''
 ARCH=arm64v8/
-QEMU_ARCH=aarm64
+QEMU_ARCH=aarch64
 DOCKER_IMAGE_VERSION=4.9.8
 DOCKER_IMAGE_NAME=biarms/wordpress
 DOCKER_IMAGE_TAGNAME=$(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
@@ -32,6 +32,7 @@ push: push-images
 test: check
 	docker run --rm $(DOCKER_IMAGE_NAME) /bin/echo "Success."
 	docker run --rm $(DOCKER_IMAGE_NAME) uname -a
+	docker run --rm $(DOCKER_IMAGE_NAME) ls -l /usr/src/wordpress/wp-content/themes | grep baskerville
 
 rmi: check
 	docker rmi -f $(DOCKER_IMAGE_TAGNAME)

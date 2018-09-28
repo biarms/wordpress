@@ -1,12 +1,28 @@
-# BUILD_ARCH: ie: "arm64v8/"
+# Perform multi-stages build as explained at https://docs.docker.com/v17.09/engine/userguide/eng-image/multistage-build/#name-your-build-stages
+
+# 1. Define args usable during the pre-build phase
+# BUILD_ARCH: the docker architecture, with a tailing '/'. For instance, "arm64v8/"
 ARG BUILD_ARCH
-# VERSION: the version. ie: "4.9.8"
+# VERSION: the version of the based image. ie: "4.9.8"
 ARG VERSION
 
-# Perform a multi-stage build as explained at https://docs.docker.com/v17.09/engine/userguide/eng-image/multistage-build/#name-your-build-stages
+# 2. Reference the qemu helper docker image
 FROM biarms/qemu-bin:latest as qemu-bin-ref
 
+# 3. Create the 'builder' images
+FROM ubuntu as builder
+RUN apt-get update && apt-get install curl unzip -y
+
+RUN cd /tmp \
+ && curl https://downloads.wordpress.org/theme/baskerville.1.26.zip --output theme.zip \
+ && mkdir -p /tmp/themes \
+ && unzip theme.zip -d /tmp/themes
+
+# 4. Start the creation of the final docker image
 FROM ${BUILD_ARCH}wordpress:${VERSION}
+MAINTAINER Brother In Arms <project.biarms@gmail.com>
+
+# QEMU_ARCH: the qemu architecture. For instance, 'arm' or 'aarch64'
 ARG QEMU_ARCH
 COPY --from=qemu-bin-ref /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin/qemu-${QEMU_ARCH}-static
 
@@ -14,9 +30,7 @@ COPY --from=qemu-bin-ref /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin/qemu-${QEMU_
 # COPY docker-entrypoint.sh /usr/local/bin/
 # ENTRYPOINT ["docker-entrypoint.sh"]
 # USER root
-MAINTAINER Brother In Arms <project.biarms@gmail.com>
-
-COPY wp-content /usr/src/wordpress/wp-content
+COPY --from=builder /tmp/themes /usr/src/wordpress/wp-content/themes
 RUN chown -R www-data:www-data /usr/src/wordpress
 
 ARG VCS_REF
