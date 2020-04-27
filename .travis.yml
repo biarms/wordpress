@@ -8,7 +8,7 @@ language: bash
 env:
   global:
     - IMAGE_NAME=biarms/wordpress
-    - VERSION=4.9.8
+    - VERSION=5.4.0
 
 # From https://docs.travis-ci.com/user/customizing-the-build/
 # install: true
