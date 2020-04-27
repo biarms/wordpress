@@ -14,7 +14,7 @@ FROM ubuntu as builder
 RUN apt-get update && apt-get install curl unzip -y
 
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/theme/baskerville.1.26.zip --output theme.zip \
+ && curl https://downloads.wordpress.org/theme/baskerville.1.28.zip --output theme.zip \
  && mkdir -p /tmp/themes \
  && unzip theme.zip -d /tmp/themes
 

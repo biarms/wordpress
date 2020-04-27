@@ -8,7 +8,8 @@ language: bash
 env:
   global:
     - IMAGE_NAME=biarms/wordpress
-    - VERSION=4.9.8
+    - OFFICIAL_IMAGE_NAME=wordpress
+    - VERSION=5.4.0
 
 # From https://docs.travis-ci.com/user/customizing-the-build/
 # install: true
@@ -56,6 +57,14 @@ script:
   - >
     echo "manifests:" >> manifest.yaml
   - >
+    echo "  - image: ${IMAGE_NAME}:linux-amd64-${IMAGE_VERSION} " >> manifest.yaml
+  - >
+    echo "    platform: " >> manifest.yaml
+  - >
+    echo "      os: linux " >> manifest.yaml
+  - >
+    echo "      architecture: amd64 " >> manifest.yaml
+  - >
     echo "  - image: ${IMAGE_NAME}:linux-arm32v5-${IMAGE_VERSION} " >> manifest.yaml
   - >
     echo "    platform: " >> manifest.yaml
@@ -87,6 +96,7 @@ script:
     echo "      variant: v8 " >> manifest.yaml
   - cat manifest.yaml
   - VCS_REF=$(git rev-parse --short HEAD)
+  - docker pull ${OFFICIAL_IMAGE_NAME}:${VERSION}
   - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm32v5/" --build-arg QEMU_ARCH="arm" -t ${IMAGE_NAME}:build-arm32v5 .
   - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm32v7/" --build-arg QEMU_ARCH="arm" -t ${IMAGE_NAME}:build-arm32v7 .
   - docker build --build-arg VCS_REF=$VCS_REF --build-arg BUILD_DATE=${BUILD_DATE} --build-arg VERSION="${VERSION}" --build-arg BUILD_ARCH="arm64v8/" --build-arg QEMU_ARCH="aarch64" -t ${IMAGE_NAME}:build-arm64v8 .
@@ -99,6 +109,9 @@ after_success:
   - docker push ${IMAGE_NAME}:linux-arm32v7-${IMAGE_VERSION}
   - docker tag ${IMAGE_NAME}:build-arm64v8 ${IMAGE_NAME}:linux-arm64v8-${IMAGE_VERSION}
   - docker push ${IMAGE_NAME}:linux-arm64v8-${IMAGE_VERSION}
+  # Push the official image as amd64
+  - docker tag ${OFFICIAL_IMAGE_NAME}:${VERSION} ${IMAGE_NAME}:linux-amd64-${IMAGE_VERSION}
+  - docker push ${IMAGE_NAME}:linux-amd64-${IMAGE_VERSION}
   - bash -c './manifest-tool push from-spec manifest.yaml'
   - >
     if [[ "${BETA_MODE}" == "false" ]]; then
