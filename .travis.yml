@@ -116,9 +116,13 @@ after_success:
   - docker tag ${IMAGE_NAME}:build-arm64v8 ${IMAGE_NAME}:linux-arm64v8-${IMAGE_VERSION}
   - docker push ${IMAGE_NAME}:linux-arm64v8-${IMAGE_VERSION}
   - bash -c './manifest-tool push from-spec manifest.yaml'
+  # Test manifest
+  - docker pull ${IMAGE_NAME}:${IMAGE_VERSION}
   - >
     if [[ "${BETA_MODE}" == "false" ]]; then
       echo "Building master branch. Let's also push the 'latest' tag on docker hub"
       docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:latest
       docker push ${IMAGE_NAME}:latest
+      # Test manifest
+      docker pull ${IMAGE_NAME}
     fi
