@@ -66,7 +66,7 @@ COPY --from=builder /tmp/themes /usr/src/wordpress/wp-content/themes
 RUN chown -R www-data:www-data /usr/src/wordpress/wp-content/themes
 
 # Remove default plugins
-RUN rm -rf /usr/src/wordpress/wp-content/plugins/*
+# RUN rm -rf /usr/src/wordpress/wp-content/plugins/*
 
 # Add plugins
 COPY --from=builder /tmp/plugins /usr/src/wordpress/wp-content/plugins
