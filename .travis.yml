@@ -9,7 +9,7 @@ env:
   global:
     - IMAGE_NAME=biarms/wordpress
     - OFFICIAL_IMAGE_NAME=wordpress
-    - VERSION=5.4.0b
+    - VERSION=5.4.0
 
 # From https://docs.travis-ci.com/user/customizing-the-build/
 # install: true
