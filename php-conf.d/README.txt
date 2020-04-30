@@ -1,0 +1,1 @@
+This file must be added to the /usr/local/etc/php/conf.d/ folder change the default setting of php 7 (which is only 2 MB)
