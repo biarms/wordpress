@@ -25,7 +25,7 @@ build: check
 
 push-images: check
 	docker push $(DOCKER_IMAGE_TAGNAME)
-	docker push $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest
+	# docker push $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest
 
 push: push-images
 
