@@ -41,6 +41,6 @@ after_success:
   - >
     if [[ "${BETA_MODE}" == "false" ]]; then
       echo "Building master branch. Let's also push the 'latest' tag on docker hub"
-      docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+      echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
       make build-and-push
     fi
