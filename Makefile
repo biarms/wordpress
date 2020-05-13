@@ -26,6 +26,7 @@ default: build-and-tests
 
 check:
 	@ which docker > /dev/null || (echo "Please install docker before using this script" && exit 1)
+	@ which git > /dev/null || (echo "Please install git before using this script" && exit 1)
 	@ DOCKER_CLI_EXPERIMENTAL=enabled docker manifest --help | grep "docker manifest COMMAND" > /dev/null || (echo "docker manifest is needed. Consider upgrading docker" && exit 2)
 	@ DOCKER_CLI_EXPERIMENTAL=enabled docker version -f '{{.Client.Experimental}}' | grep "true" > /dev/null || (echo "docker experimental mode is not enabled" && exit 2)
 	@ echo "DOCKER_REGISTRY: ${DOCKER_REGISTRY}"
@@ -34,11 +35,13 @@ check:
 
 infra-tests: check
 	docker version
-	docker buildx version
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx version
 
 prepare: infra-tests
-	docker buildx create --name=buildx-multi-arch || true
-	docker buildx use buildx-multi-arch
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx create --name=buildx-multi-arch || true
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx use buildx-multi-arch
+	@ # From https://github.com/multiarch/qemu-user-static:
+	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
 test-arm32v6: check
 	# Logically, the test should be with "LINUX_ARCH=armv6l" (and not armv7l)
@@ -61,12 +64,11 @@ test-images: test-arm32v6 test-arm32v7 test-arm64v8 test-amd64
 	echo "All tests are OK :)"
 
 build: prepare
-	docker buildx build -f Dockerfile --platform "${PLATFORM}" --tag "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}" --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg VCS_REF="${VCS_REF}" --build-arg BUILD_DATE="${BUILD_DATE}" .
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build -f Dockerfile --platform "${PLATFORM}" --tag "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}" --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg VCS_REF="${VCS_REF}" --build-arg BUILD_DATE="${BUILD_DATE}" .
 
 build-and-tests: prepare test-images build
 	echo "Build completed"
 
 build-and-push: prepare test-images
-	docker buildx build -f Dockerfile --push --platform "${PLATFORM}" --tag "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}" --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg VCS_REF="${VCS_REF}" --build-arg BUILD_DATE="${BUILD_DATE}" .
-	docker buildx build -f Dockerfile --push --platform "${PLATFORM}" --tag "${DOCKER_IMAGE_NAME}:latest" --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg VCS_REF="${VCS_REF}" --build-arg BUILD_DATE="${BUILD_DATE}" .
-
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build -f Dockerfile --push --platform "${PLATFORM}" --tag "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}" --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg VCS_REF="${VCS_REF}" --build-arg BUILD_DATE="${BUILD_DATE}" .
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build -f Dockerfile --push --platform "${PLATFORM}" --tag "${DOCKER_IMAGE_NAME}:latest" --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg VCS_REF="${VCS_REF}" --build-arg BUILD_DATE="${BUILD_DATE}" .
