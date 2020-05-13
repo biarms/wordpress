@@ -38,6 +38,7 @@ infra-tests: check
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx version
 
 prepare: infra-tests
+	DOCKER_CLI_EXPERIMENTAL=enabled docker context create buildx-multi-arch-context
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx create --name=buildx-multi-arch || true
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx use buildx-multi-arch
 	@ # From https://github.com/multiarch/qemu-user-static:
