@@ -1,44 +1,20 @@
 SHELL = bash
 
-# Inspired from https://github.com/hypriot/rpi-mysql/blob/master/Makefile
-
 DOCKER_IMAGE_VERSION ?=
 ARCH ?=
 LINUX_ARCH ?=
-# |---------|------------|
-# |  ARCH   | LINUX_ARCH |
-# |---------|------------|
-# |  amd64  |   x86_64   |
-# | arm32v6 |   armv6l   |
-# | arm32v7 |   armv7l   |
-# | arm64v8 |   aarch64  |
-# |---------|------------|
 DOCKER_IMAGE_NAME = test
-#DOCKER_IMAGE_TAGNAME = $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)-$(ARCH)
 BUILD_ARCH = $(ARCH)/
 DOCKER_FILE = Dockerfile
 
 default: test
 
 check:
-	# @which manifest-tool > /dev/null || (echo "Ensure that you've got the manifest-tool utility in your path. Could be downloaded from  https://github.com/estesp/manifest-tool/releases/download/" && exit 2)
 	@which docker > /dev/null || (echo "Please install docker before using this script" && exit 1)
 	@echo "DOCKER_REGISTRY: $(DOCKER_REGISTRY)"
-	# According to https://github.com/multiarch/qemu-user-static#getting-started
-	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-
-#tag: check
-#	docker tag $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)
-#	docker tag $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest $(DOCKER_IMAGE_TAGNAME)
 
 build: check
 	docker build -t $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest -f $(DOCKER_FILE) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg BUILD_ARCH="${BUILD_ARCH}" .
-
-#push-images: check
-#	docker push $(DOCKER_IMAGE_TAGNAME)
-#	# docker push $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):latest
-
-#push: push-images
 
 test: build
 	docker run --rm $(DOCKER_IMAGE_NAME) /bin/echo "Success." | grep "Success"
@@ -47,8 +23,3 @@ test: build
 	docker run --rm $(DOCKER_IMAGE_NAME) ls -l /usr/src/wordpress/wp-content/themes | grep baskerville
 	docker run --rm $(DOCKER_IMAGE_NAME) ls -l /usr/src/wordpress/wp-content/plugins
 	docker run --rm $(DOCKER_IMAGE_NAME) ls -l /usr/src/wordpress/wp-content/plugins | grep resize-image-after-upload
-
-#rmi: check
-#	docker rmi -f $(DOCKER_IMAGE_TAGNAME)
-
-#rebuild: rmi build
