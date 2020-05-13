@@ -2,23 +2,29 @@ language: bash
 
 dist: bionic
 
+# From https://docs.travis-ci.com/user/customizing-the-build/
+# install: true
+#env:
+#  global:
+#    - DOCKER_CLI_EXPERIMENTAL=enabled
+# sudo: required
+#services:
+#  - docker
+
 env:
   - DOCKER_CLI_EXPERIMENTAL=enabled
 
-env:
-  global:
-    - IMAGE_NAME=biarms/wordpress
-    - VERSION=5.4.1-php7.4-fpm
-
-sudo: required
-
-services:
-  - docker
-
-# From https://docs.travis-ci.com/user/customizing-the-build/
-# install: true
-
 before_install:
+  - sudo rm -rf /var/lib/apt/lists/*
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - lsb_release -cs
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  # - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  - docker version
+  # From https://github.com/multiarch/qemu-user-static:
+  - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
   - BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
   - >
     if [[ "${TRAVIS_BRANCH}" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
@@ -29,12 +35,9 @@ before_install:
       BETA_MODE="true"
     fi
   - echo "TRAVIS_BRANCH=${TRAVIS_BRANCH} - DOCKER_USERNAME=${DOCKER_USERNAME}"
-  - docker version
-  # From https://github.com/multiarch/qemu-user-static:
-  - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
 script:
-  - make build-and-tests
+  - make infra-tests
 
 after_success:
   - >
