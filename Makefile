@@ -38,6 +38,9 @@ test-amd64: check
 test-images: test-arm32v7 test-arm64v8 test-amd64
 	echo "All tests are OK :)"
 
+build:
+	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
+
 build-and-tests: test-images
 	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
