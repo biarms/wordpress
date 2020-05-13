@@ -26,6 +26,16 @@ check:
 	@ DOCKER_CLI_EXPERIMENTAL=enabled docker version -f '{{.Client.Experimental}}' | grep "true" > /dev/null || (echo "docker experimental mode is not enabled" && exit 2)
 	@ echo "DOCKER_REGISTRY: $(DOCKER_REGISTRY)"
 
+infra-tests: check
+	docker version
+	docker buildx version
+
+prepare: infra-tests
+	docker buildx create --use
+
+build:
+	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
+
 test-arm32v7: check
 	ARCH=arm32v7 LINUX_ARCH=armv7l DOCKER_IMAGE_VERSION=$(DOCKER_IMAGE_VERSION) make -f test-one-image
 
@@ -38,15 +48,9 @@ test-amd64: check
 test-images: test-arm32v7 test-arm64v8 test-amd64
 	echo "All tests are OK :)"
 
-build:
-	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
-
 build-and-tests: test-images
 	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
 build-and-push: test-images
 	docker buildx build -f Dockerfile --push --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
-infra-tests: check
-	docker version
-	docker buildx version

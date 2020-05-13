@@ -35,11 +35,10 @@ before_install:
       BETA_MODE="true"
     fi
   - echo "TRAVIS_BRANCH=${TRAVIS_BRANCH} - DOCKER_USERNAME=${DOCKER_USERNAME}"
-  - make infra-tests
-  - docker buildx create --use
+  - make prepare
 
 script:
-  - make build #-and-tests
+  - make build-and-tests
 
 after_success:
   - >
