@@ -1,0 +1,37 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: ubuntu:bionic
+    steps:
+      - setup_remote_docker:
+          version: 18.09.3 # Max supported version was found on https://circleci.com/docs/2.0/building-docker-images/
+      - run: apt-get update
+      - run: apt-get install -y sudo curl make gnupg lsb-release software-properties-common git
+      - run: sudo rm -rf /var/lib/apt/lists/*
+      - run: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+      - run: lsb_release -cs
+      - run: sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
+      - run: sudo apt-get update
+      - run: sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+      # run: From https://github.com/multiarch/qemu-user-static:
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - run:
+          name: debug env variables
+          command: 'echo "DOCKER_USERNAME: $DOCKER_USERNAME"'
+      - run:
+          name: debug os
+          command: 'cat /etc/*release'
+      - run:
+          name: debug kernel
+          command: 'uname -a'
+      - run:
+          name: debug docker version
+          command: 'docker version'
+      - run:
+          name: debug make version
+          command: 'make --version'
+      # - run: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      - checkout
+      - run: make build-and-tests
