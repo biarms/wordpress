@@ -17,8 +17,9 @@ ARG VERSION
 # So let's stick to ubuntu 18.04 !
 # By the way, as our builder image is not building (compling) anything, and is only downloading php files.
 # So using ${BUILD_ARCH} in next line is actually cleaner (and slower), but useless !
-FROM ${BUILD_ARCH}ubuntu:xenial-20200326 as builder
-RUN apt-get update && apt-get install curl unzip ca-certificates -y
+# Or even better: use an alpine release !
+FROM ${BUILD_ARCH}alpine:3.11.6 as builder
+RUN apk add curl unzip
 
 # Add themes
 RUN cd /tmp \

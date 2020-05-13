@@ -1,15 +1,16 @@
 SHELL = bash
 
 DOCKER_REGISTRY ?= 'docker.io'
-DOCKER_IMAGE_VERSION ?= 5.4.1-php7.4-fpm
+DOCKER_IMAGE_VERSION ?= 5.4.1-php7.3-fpm-alpine
 DOCKER_IMAGE_NAME = biarms/wordpress
 BUILD_DATE ?= `date -u +"%Y-%m-%dT%H-%M-%SZ"`
 # See https://microbadger.com/labels
 VCS_REF = `git rev-parse --short HEAD`
-PLATFORM ?= linux/arm/v7,linux/arm64/v8,linux/amd64
+PLATFORM ?= linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
 
 ARCH ?= arm64v8
 LINUX_ARCH ?= aarch64
+# See https://github.com/docker-library/official-images#architectures-other-than-amd64
 # |---------|------------|
 # |  ARCH   | LINUX_ARCH |
 # |---------|------------|
@@ -39,6 +40,14 @@ prepare: infra-tests
 	docker buildx create --name=buildx-multi-arch || true
 	docker buildx use buildx-multi-arch
 
+test-arm32v6: check
+	# Logically, the test should be with "LINUX_ARCH=armv6l" (and not armv7l)
+	# ARCH=arm32v6 LINUX_ARCH=armv6l DOCKER_IMAGE_VERSION=$(DOCKER_IMAGE_VERSION) make -f test-one-image
+	# The pb is that 'docker run -it --rm arm32v6/alpine:3.11.6 uname -m' won't return armv6l, but armv7l.
+	# Actually, on a rpi1, "docker run -it --rm alpine:3.8 uname -m" return "armv6l", but "docker run -it --rm alpine:3.9 uname -m" return nothing !
+	# So let's hack this 'very simple test' script to produce the armv6 image anyway:
+	ARCH=arm32v6 LINUX_ARCH=armv7l DOCKER_IMAGE_VERSION=$(DOCKER_IMAGE_VERSION) make -f test-one-image
+
 test-arm32v7: check
 	ARCH=arm32v7 LINUX_ARCH=armv7l DOCKER_IMAGE_VERSION=$(DOCKER_IMAGE_VERSION) make -f test-one-image
 
@@ -48,7 +57,7 @@ test-arm64v8: check
 test-amd64: check
 	ARCH=amd64 LINUX_ARCH=x86_64 DOCKER_IMAGE_VERSION=$(DOCKER_IMAGE_VERSION) make -f test-one-image
 
-test-images: test-arm32v7 test-arm64v8 test-amd64
+test-images: test-arm32v6 test-arm32v7 test-arm64v8 test-amd64
 	echo "All tests are OK :)"
 
 build: prepare
@@ -59,4 +68,5 @@ build-and-tests: prepare test-images build
 
 build-and-push: prepare test-images
 	docker buildx build -f Dockerfile --push --platform "${PLATFORM}" --tag "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}" --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg VCS_REF="${VCS_REF}" --build-arg BUILD_DATE="${BUILD_DATE}" .
+	docker buildx build -f Dockerfile --push --platform "${PLATFORM}" --tag "${DOCKER_IMAGE_NAME}:latest" --build-arg VERSION="${DOCKER_IMAGE_VERSION}" --build-arg VCS_REF="${VCS_REF}" --build-arg BUILD_DATE="${BUILD_DATE}" .
 

@@ -2,7 +2,7 @@
 
 [![build status](https://api.travis-ci.org/biarms/wordpress.svg?branch=master)](https://travis-ci.org/biarms/wordpress)
 
-This image is actually based on WordPress official image, version 5.4.1-php7.4-fpm.
+This image is actually based on WordPress official image, version 5.4.1-php7.3-fpm-alpine.
 The only differences are
 1. The addition of the 'baskerville' and the 'travelera-lite' themes
 2. The removal of the default (commerical) wordpress plugin and the addition of some other plugins
