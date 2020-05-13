@@ -31,9 +31,10 @@ infra-tests: check
 	docker buildx version
 
 prepare: infra-tests
-	docker buildx create --use
+	docker buildx create --name=buildx-multi-arch || true
+	docker buildx use buildx-multi-arch
 
-build:
+build: prepare
 	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
 test-arm32v7: check
@@ -48,9 +49,9 @@ test-amd64: check
 test-images: test-arm32v7 test-arm64v8 test-amd64
 	echo "All tests are OK :)"
 
-build-and-tests: test-images
+build-and-tests: prepare test-images
 	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
-build-and-push: test-images
+build-and-push: prepare test-images
 	docker buildx build -f Dockerfile --push --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
