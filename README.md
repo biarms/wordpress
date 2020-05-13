@@ -1,6 +1,7 @@
 # Brothers in ARMs' project
 
-[![build status](https://api.travis-ci.org/biarms/wordpress.svg?branch=master)](https://travis-ci.org/biarms/wordpress)
+[![Travis build status](https://api.travis-ci.org/biarms/wordpress.svg?branch=master)](https://travis-ci.org/biarms/wordpress)
+[![CircleCI build status](https://circleci.com/gh/biarms/wordpress.svg?style=svg)](https://circleci.com/gh/biarms/wordpress)
 
 This image is actually based on WordPress official image, version 5.4.1-php7.3-fpm-alpine.
 The only differences are
