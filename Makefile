@@ -51,7 +51,7 @@ test-images: test-arm32v7 test-arm64v8 test-amd64
 	echo "All tests are OK :)"
 
 build-and-tests: prepare test-images
-	docker buildx build -f Dockerfile --platform --platform $(PLATFORM) --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
+	docker buildx build -f Dockerfile --platform $(PLATFORM) --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
 build-and-push: prepare test-images
 	docker buildx build -f Dockerfile --push --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
