@@ -4,6 +4,7 @@ DOCKER_REGISTRY ?= 'docker.io'
 DOCKER_IMAGE_VERSION ?= 5.4.1-php7.4-fpm
 DOCKER_IMAGE_NAME = biarms/wordpress
 BUILD_DATE ?= $(date -u +"%Y-%m-%dT%H-%M-%SZ")
+PLATFORM ?= linux/arm/v7,linux/arm64/v8,linux/amd64
 
 ARCH ?= arm64v8
 LINUX_ARCH ?= aarch64
@@ -35,7 +36,7 @@ prepare: infra-tests
 	docker buildx use buildx-multi-arch
 
 build: prepare
-	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
+	docker buildx build -f Dockerfile --platform $(PLATFORM) --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
 test-arm32v7: check
 	ARCH=arm32v7 LINUX_ARCH=armv7l DOCKER_IMAGE_VERSION=$(DOCKER_IMAGE_VERSION) make -f test-one-image
@@ -50,7 +51,7 @@ test-images: test-arm32v7 test-arm64v8 test-amd64
 	echo "All tests are OK :)"
 
 build-and-tests: prepare test-images
-	docker buildx build -f Dockerfile --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
+	docker buildx build -f Dockerfile --platform --platform $(PLATFORM) --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
 
 build-and-push: prepare test-images
 	docker buildx build -f Dockerfile --push --platform linux/arm64/v8,linux/amd64 --tag $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION) --build-arg VERSION="${DOCKER_IMAGE_VERSION}" .
