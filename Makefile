@@ -15,6 +15,7 @@ DOCKER_PASSWORD ?=
 BETA_VERSION ?=
 DOCKER_IMAGE_NAME = biarms/wordpress
 DOCKER_IMAGE_VERSION ?= 5.4.1
+VERSION_SUFFIX = -php7.4-fpm-alpine
 DOCKER_IMAGE_TAGNAME = ${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}${BETA_VERSION}
 # See https://www.gnu.org/software/make/manual/html_node/Shell-Function.html
 BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -165,7 +166,6 @@ test-amd64:
 ARCH ?= arm64v8
 LINUX_ARCH ?= aarch64
 BUILD_ARCH = $(ARCH)/
-VERSION_SUFFIX = -php7.4-fpm-alpine
 MULTI_ARCH_DOCKER_IMAGE_TAGNAME = ${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}${VERSION_SUFFIX}${VERSION_SUFFIX}-linux-${ARCH}${BETA_VERSION}
 
 ## Multi-arch targets
