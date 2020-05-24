@@ -21,9 +21,11 @@ ARG VERSION
 FROM ${BUILD_ARCH}alpine:3.11.6 as builder
 RUN apk add curl unzip
 
-# Add themes
+##############
+# Add themes #
+##############
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/theme/baskerville.2.1.3.zip --output theme.zip \
+ && curl https://downloads.wordpress.org/theme/baskerville.2.1.4.zip --output theme.zip \
  && mkdir -p /tmp/themes \
  && unzip theme.zip -d /tmp/themes
 
@@ -32,7 +34,19 @@ RUN cd /tmp \
  && mkdir -p /tmp/themes \
  && unzip theme.zip -d /tmp/themes
 
-# Add plugins
+###############
+# Add plugins #
+###############
+# [Jetpack](https://fr.wordpress.org/plugins/jetpack/): mainly for the web-site monitoring...
+RUN cd /tmp \
+ && curl https://downloads.wordpress.org/plugin/jetpack.8.5.zip --output plugin.zip \
+ && mkdir -p /tmp/plugins \
+ && unzip plugin.zip -d /tmp/plugins
+# [All-in-one-wp-migration](https://fr.wordpress.org/plugins/all-in-one-wp-migration/):
+RUN cd /tmp \
+ && curl https://downloads.wordpress.org/plugin/all-in-one-wp-migration.7.22.zip --output plugin.zip \
+ && mkdir -p /tmp/plugins \
+ && unzip plugin.zip -d /tmp/plugins
 # [foobox-image-lightbox](https://fr.wordpress.org/plugins/foobox-image-lightbox/): mandatory if you install foogallery - v2.7.8
 RUN cd /tmp \
  && curl https://downloads.wordpress.org/plugin/foobox-image-lightbox.zip --output plugin.zip \
@@ -103,7 +117,7 @@ COPY --from=builder /tmp/themes /usr/src/wordpress/wp-content/themes
 RUN chown -R www-data:www-data /usr/src/wordpress/wp-content/themes
 
 # Remove default plugins
-# RUN rm -rf /usr/src/wordpress/wp-content/plugins/*
+RUN rm -rf /usr/src/wordpress/wp-content/plugins/*
 
 # Add plugins
 COPY --from=builder /tmp/plugins /usr/src/wordpress/wp-content/plugins
