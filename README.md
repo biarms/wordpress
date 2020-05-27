@@ -63,3 +63,19 @@ Resulting docker images are pushed on [dockerhub](https://hub.docker.com/r/biarm
    - proxy_send_timeout 600
    - proxy_read_timeout 600
 1. To debug the previous step (on Synology): `cat /etc/nginx/app.d/server.ReverseProxy.conf`
+
+## Release notes
+The goal of this section is not to list exhaustively every release, but only to highlight important changes between releases, if any.
+For an exhaustive list of releases, see https://hub.docker.com/r/biarms/wordpress/tags and https://github.com/biarms/wordpress/releases.
+
+### Release 4.9.2 (February 2018)
+First build on an arm device: this release is NOT a multi-architecture build
+
+### Release 4.9.8 (September 2018)
+First multi-arch build, supporting (theorically) arm32v5 (never tested on this kind of device), arm32v6 (by running the arm32v5 image...), arm32v7 and arm64v8. amd64 was not supported.
+
+### Release 5.4.0 (May 2020)
+Add arm64 support
+
+### Release 5.4.1 (May 2020)
+Build 'apache' image, but also 'php7.4-fpm-alpine' images
