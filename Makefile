@@ -136,7 +136,6 @@ test-arm32v6:
 	# Logically, the test should be with "LINUX_ARCH=armv6l" (and not armv7l)
 	# ARCH=arm32v6 LINUX_ARCH=armv6l DOCKER_IMAGE_VERSION=$(DOCKER_IMAGE_VERSION) make -f test-one-image
 	# The pb is that 'docker run -it --rm arm32v6/alpine:3.11.6 uname -m' won't return armv6l, but armv7l.
-	# Actually, on a rpi1, "docker run -it --rm alpine:3.8 uname -m" return "armv6l", but "docker run -it --rm alpine:3.9 uname -m" return nothing !
 	# So let's hack this 'very simple test' script to produce the armv6 image anyway:
 	ARCH=arm32v6 LINUX_ARCH=armv7l DOCKER_IMAGE_VERSION=$(DOCKER_IMAGE_VERSION) make test-one-image
 
