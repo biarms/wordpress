@@ -27,7 +27,7 @@ PLATFORM ?= linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
 default: all
 
 # 2 builds are implemented: build and buildx (for the fun)
-# It was for the fun, but it is actually used anyway: 'all-build' builds the 'apache' image, while 'all-buildx' builds the '-php7.4-fpm-alpine' images
+# It was for the fun, but it is actually used anyway: 'all-build' builds the 'apache' image, while 'all-buildx' builds the '-php8.1-fpm-alpine' images
 # thanks to a simple hack of the MULTI_ARCH_DOCKER_IMAGE_TAGNAME definition ;)
 all: all-buildx all-build
 
