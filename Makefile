@@ -14,8 +14,8 @@ DOCKER_PASSWORD ?=
 # BETA_VERSION: Nothing, or '-beta-123'
 BETA_VERSION ?=
 DOCKER_IMAGE_NAME = biarms/wordpress
-DOCKER_IMAGE_VERSION ?= 5.4.1
-VERSION_SUFFIX = -php7.4-fpm-alpine
+DOCKER_IMAGE_VERSION ?= 5.8.2
+VERSION_SUFFIX = -php8.1-fpm-alpine
 DOCKER_IMAGE_TAGNAME = ${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}${BETA_VERSION}
 # See https://www.gnu.org/software/make/manual/html_node/Shell-Function.html
 BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")

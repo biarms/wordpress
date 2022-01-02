@@ -18,7 +18,7 @@ ARG VERSION
 # By the way, as our builder image is not building (compling) anything, and is only downloading php files.
 # So using ${BUILD_ARCH} in next line is actually cleaner (and slower), but useless !
 # Or even better: use an alpine release !
-FROM ${BUILD_ARCH}alpine:3.11.6 as builder
+FROM ${BUILD_ARCH}alpine:3.15.0 as builder
 RUN apk add curl unzip
 
 ##############
@@ -39,32 +39,32 @@ RUN cd /tmp \
 ###############
 # [Jetpack](https://fr.wordpress.org/plugins/jetpack/): mainly for the web-site monitoring...
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/jetpack.8.5.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/jetpack.10.4.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [All-in-one-wp-migration](https://fr.wordpress.org/plugins/all-in-one-wp-migration/):
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/all-in-one-wp-migration.7.22.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/all-in-one-wp-migration.7.51.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [foobox-image-lightbox](https://fr.wordpress.org/plugins/foobox-image-lightbox/): mandatory if you install foogallery - v2.7.8
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/foobox-image-lightbox.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/foobox-image-lightbox.2.7.16.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [foogallery](https://fr.wordpress.org/plugins/foogallery/): not an awesome, but a good media gallery - v1.9.24
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/foogallery.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/foogallery.2.1.18.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [cookie-law-info](https://fr.wordpress.org/plugins/cookie-law-info/): to be gdpr compliant
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/cookie-law-info.1.8.8.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/cookie-law-info.2.0.6.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [health-check](https://fr.wordpress.org/plugins/health-check/): give tips about your web site install
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/health-check.1.4.4.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/health-check.1.4.5.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [upload-max-file-size](https://fr.wordpress.org/plugins/upload-max-file-size/): mandatory (but not suffisant) to increase upload file size
@@ -74,12 +74,12 @@ RUN cd /tmp \
  && unzip plugin.zip -d /tmp/plugins
 # [media-library-assistant](https://fr.wordpress.org/plugins/media-library-assistant/): add taxonomy to media, with bulk update ;)
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/media-library-assistant.2.83.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/media-library-assistant.2.98.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [regenerate-thumbnails](https://fr.wordpress.org/plugins/regenerate-thumbnails/): not perfect, but could help
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/regenerate-thumbnails.3.1.3.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/regenerate-thumbnails.3.1.5.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [resize-image-after-upload](https://fr.wordpress.org/plugins/resize-image-after-upload/): mandatory for me: recompress every uploaded media before it is save on the media library
@@ -94,12 +94,12 @@ RUN cd /tmp \
  && unzip plugin.zip -d /tmp/plugins
 # [user-access-manager](https://fr.wordpress.org/plugins/user-access-manager/): manage groups of users
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/user-access-manager.2.1.12.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/user-access-manager.2.2.15.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 # [wp-mail-smtp](https://fr.wordpress.org/plugins/wp-mail-smtp/): to be able to send emails
 RUN cd /tmp \
- && curl https://downloads.wordpress.org/plugin/wp-mail-smtp.2.0.1.zip --output plugin.zip \
+ && curl https://downloads.wordpress.org/plugin/wp-mail-smtp.3.2.1.zip --output plugin.zip \
  && mkdir -p /tmp/plugins \
  && unzip plugin.zip -d /tmp/plugins
 
