@@ -13,6 +13,8 @@ jobs:
           if [ "${CIRCLE_BRANCH}" == "master" ]
           then
             make
+            VERSION_SUFFIX='-php8.1-apache' make
           else
             BETA_VERSION='-beta-circleci' make
+            BETA_VERSION='-beta-circleci' VERSION_SUFFIX='-php8.1-apache' make
           fi

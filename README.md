@@ -17,7 +17,7 @@
 -->
 
 ## Overview
-This image is actually based on WordPress official image, version 5.4.1-php7.4-fpm-alpine.
+This image is actually based on WordPress official image, version 5.8.2 (php8.1-fpm-alpine and php8.1-apache).
 The only differences are
 1. The addition of the 'baskerville' and the 'travelera-lite' themes
 2. The removal of the default (commerical) wordpress plugin and the addition of some other plugins
