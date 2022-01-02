@@ -80,7 +80,7 @@ For an exhaustive list of releases, see https://hub.docker.com/r/biarms/wordpres
 ### Release 5.4.1 (May 2020)
 - Build 'apache' image, but also 'php7.4-fpm-alpine' images
 
-### Release 5.8.2 (December 2021)
+### Release 5.8.2 (January 2022)
 - Upgrade to Wordpress 5.8.2
 - Upgrade to the latest version of the plugins 
 - Upgrade to php 8.1
